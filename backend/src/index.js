@@ -1,6 +1,6 @@
 import express from "express";
 import authRoutes from "./routes/auth.route.js";
-import { connectTomongo } from "./lib/mongoose.js";
+import { connectTomongo } from "./lib/mongoose.lib.js";
 import dotenv from "dotenv";
 dotenv.config();
 const PORT = process.env.Port;
