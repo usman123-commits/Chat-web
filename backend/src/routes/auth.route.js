@@ -18,6 +18,6 @@ router.post("/signup"
 
 
 // For logout
-router.post("/logout", logout);
+router.post("/login", login);
 
 export default router;
