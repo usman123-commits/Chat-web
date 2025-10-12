@@ -27,14 +27,15 @@ export const signUp = async (req, res) => {
 
     // logic for generating a token
     if (newUser) {
+      await newUser.save();
       generateToken(newUser._id, res);
-      newUser.save();
+      
       return res.status(201).json({ message: "User created successfully" });
     } else {
       return res.status(400).json({ message: "Error in creating user" });
     }
   } catch (error) {
-    console.log("error in signup controller", error.message);
+    console.log("error in signup controller :", `"${error.message}"`);
     return res.status(500).json({ message: "Internal Server error" });
   }
 };
@@ -113,6 +114,7 @@ if (!cloudinaryResponse){
 export const checkAuth = async(req, res) => {
   try {
     // sending the user data if the user is authenticated
+    // req.user contains the user id from the protectRoute middleware
     res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller",error.message);

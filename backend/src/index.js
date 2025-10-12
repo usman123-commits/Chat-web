@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./routes/auth.route.js";
+import messageRoutes from "./routes/message.route.js";
 import { connectTomongo } from "./lib/mongoose.lib.js";
 import cookieParser from "cookie-parser";
 // for environment variables
@@ -17,6 +18,7 @@ app.use(cookieParser());
 connectTomongo();
 // Routes with prefix api auth
 app.use("/api/auth", authRoutes);
+app.use("/api/message", messageRoutes);
 
 
 
