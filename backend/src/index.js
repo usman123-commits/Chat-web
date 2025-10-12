@@ -1,6 +1,8 @@
 import express from "express";
 import authRoutes from "./routes/auth.route.js";
 import { connectTomongo } from "./lib/mongoose.lib.js";
+import cookieParser from "cookie-parser";
+// for environment variables
 import dotenv from "dotenv";
 dotenv.config();
 const PORT = process.env.Port;
@@ -9,6 +11,8 @@ const PORT = process.env.Port;
 const app = express();
 // Middleware to extract data from the body of incoming requests and in form of JSON
 app.use(express.json());
+// to extract the cookies from the request
+app.use(cookieParser());
 // connecting to mongoDB
 connectTomongo();
 // Routes with prefix api auth

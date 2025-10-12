@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/jwt.lib.js";
+import { cloudinary } from "../lib/cloudinary.lib.js";
 
 export const signUp = async (req, res) => {
   const { fullName, email, password, profilePic } = req.body;
@@ -16,7 +17,7 @@ export const signUp = async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
     // create a new user
-    console.log(profilePic);
+    
     const newUser = new User({
       fullName,
       email,
@@ -69,5 +70,53 @@ export const login = async (req, res) => {
 };
 // For logout route
 export const logout = (req, res) => {
-  res.json({ message: "Login route" });
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.log("Error in logout controller",error.message);
+    return res.status(500).json({ message: "Internal Server error" });
+  }
+  
 };
+
+// For updating user profile using cloudinary
+export const updateProfile = async(req, res) => {
+  try {
+    const {  profilePic } = req.body;
+    const userId = req.user._id;
+if (!profilePic){
+  return res.status(400).json({message:"Profile pic is required"});
+}
+const cloudinaryResponse = await cloudinary.uploader.upload(profilePic)
+if (!cloudinaryResponse){
+  return res.status(500).json({message:"Error in uploading image"});
+}
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: cloudinaryResponse.secure_url },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({updatedUser});
+
+  } catch (error) {
+    console.log("Error in updateProfile controller ",error.message);
+    res.status(500).json({message:"Internal server error"});
+  }
+  
+};
+
+// For Checking if the user is authenticated or not
+export const checkAuth = async(req, res) => {
+  try {
+    // sending the user data if the user is authenticated
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller",error.message);
+    res.status(500).json({message:"Internal server error"});
+  }
+}
+ 
