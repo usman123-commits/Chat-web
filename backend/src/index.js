@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectTomongo } from "./lib/mongoose.lib.js";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 // for environment variables
 import dotenv from "dotenv";
@@ -14,17 +15,19 @@ const app = express();
 app.use(express.json());
 // to extract the cookies from the request
 app.use(cookieParser());
+
+// using cors to give frontend access to this backend apis
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 // connecting to mongoDB
 connectTomongo();
 // Routes with prefix api auth
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
-
-
-
-
-
-
 
 app.listen(PORT, () => {
   console.log(` Server is running on port ${PORT} `);
