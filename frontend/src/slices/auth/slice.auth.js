@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { checkAuth } from "./slice.auth.thunk.js";
 export const sliceAuth = createSlice({
   name: "Auth",
@@ -10,7 +10,9 @@ export const sliceAuth = createSlice({
     isCheckingAuth: true,
   },
   // reducers must be pure funcctions i cannot use async in them for async i have go towards createAsyncThunk
-  reducers: {},
+  reducers: {
+
+  },
   //
   extraReducers: (builder) => {
     builder
@@ -27,5 +29,7 @@ export const sliceAuth = createSlice({
       });
   },
 });
+
+// we are exporting reducer functions and there actions from here
 export const {  } = sliceAuth.actions;
 export default sliceAuth.reducer;
