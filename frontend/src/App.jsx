@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "./slices/auth/slice.auth.thunk.js";
 import { Loader } from "lucide-react";
 import { useEffect } from "react";
+import {Toaster} from "react-hot-toast"
 
 const App = () => {
   const { isCheckingAuth, authUser } = useSelector((state) => state.auth);
@@ -18,6 +19,7 @@ const App = () => {
   useEffect(() => {
     dispatch(checkAuth());
   }, [checkAuth]);
+// this is used when data is loading 
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -48,6 +50,7 @@ const App = () => {
           element={authUser ? <ProfilePage /> : <Navigate to="/Login" />}
         />
       </Routes>
+      <Toaster/>
     </>
   );
 };

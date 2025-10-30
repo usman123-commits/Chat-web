@@ -10,20 +10,66 @@ import {
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import AuthImagePattern from "../components/AuthImagePattern";
-import { checkAuth} from "../slices/auth/slice.auth.thunk.js"
-import { useDispatch,useSelector} from "react-redux"
+import { signUp } from "../slices/auth/slice.auth.thunk.js";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
 const SignUp = () => {
-  const {isSigningUp}=useSelector((state)=>state.auth)
-  const handleSubmit = () => {};
-  const setFormData = () => {};
-  const showPassword="";
-
-  const formData = {
+  // acessing global state variables by redux
+  const { isSigningUp } = useSelector((state) => state.auth);
+  // For dispatching the events
+  const dispatch = useDispatch();
+  // using useState for local states
+  const [formData, setFormData] = useState({
     fullName: "",
-    email: "",
     password: "",
+    email: "",
+  });
+  const [showPassword, setShowpass] = useState(false);
+
+  const updateFormdata = (name, value) => {
+    setFormData({ ...formData, [name]: value });
   };
+
+  // to display pass in the placeholder
+  const setShowPassword = () => {
+    if (showPassword == false) {
+      setShowpass(true);
+    } else {
+      setShowpass(false);
+    }
+  };
+
+  // this function runs to validate form
+  const validateForm = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.fullName) return toast.error("Please enter your name");
+
+    if (formData.fullName.trim() < 3)
+      return toast.error("Full name must be at least 3 characters long");
+
+    if (!formData.email) return toast.error("Please enter an email");
+
+    if (!emailRegex.test(formData.email))
+      return toast.error("Please enter a valid email");
+
+    if (!formData.password) return toast.error("Please enter a password");
+
+    if (formData.password.length < 6) {
+      return toast.error("Password must be at least 6 characters long");
+    }
+
+    return true;
+  };
+
+  // this function runs when user submit the form
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      dispatch(signUp(formData));
+    }
+  };
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* left side */}
@@ -45,7 +91,7 @@ const SignUp = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={(e) => handleSubmit(e)} className="space-y-6">
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Full Name</span>
@@ -56,12 +102,13 @@ const SignUp = () => {
                 </div>
                 <input
                   type="text"
+                  name="fullName"
                   className={`input input-bordered w-full pl-10`}
                   placeholder="John Doe"
                   value={formData.fullName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
-                  }
+                  onChange={(e) => {
+                    updateFormdata(e.target.name, e.target.value);
+                  }}
                 />
               </div>
             </div>
@@ -76,12 +123,13 @@ const SignUp = () => {
                 </div>
                 <input
                   type="email"
+                  name="email"
                   className={`input input-bordered w-full pl-10`}
                   placeholder="you@example.com"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => {
+                    updateFormdata(e.target.name, e.target.value);
+                  }}
                 />
               </div>
             </div>
@@ -95,18 +143,19 @@ const SignUp = () => {
                   <Lock className="size-5 text-base-content/40" />
                 </div>
                 <input
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   className={`input input-bordered w-full pl-10`}
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
+                  onChange={(e) => {
+                    updateFormdata(e.target.name, e.target.value);
+                  }}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword()}
                 >
                   {showPassword ? (
                     <EyeOff className="size-5 text-base-content/40" />
