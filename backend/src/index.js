@@ -21,8 +21,10 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
+    methods:["GET", "POST", "PUT", "DELETE"]
   })
 );
+
 // connecting to mongoDB
 connectTomongo();
 // Routes with prefix api auth

@@ -41,37 +41,39 @@ export const getMessages = async (req, res) => {
 };
 
 // for sending a message to a user
-//
+
 export const sendMessage = async (req, res) => {
   try {
     // the user we are sending message to
     const { id: receiverId } = req.params;
     // sender id from the protectRoute middleware
-    const senderId = req.user;
+    const senderId = req.user._id.toString();
     // the image in base64 and text format from the body
+
     const { text, image: imageFrombody } = req.body;
     //Implementing functionality if there is an image then upload it to cloudinary and get the url
     let imageUrl;
 
-    if (image) {
+    // only run if image is present
+    if (imageFrombody) {
       const cloudinaryResponse = await cloudinary.uploader.upload(
         imageFrombody
       );
       imageUrl = cloudinaryResponse.secure_url;
     }
+    console.log("Sender:", req.user?._id.toString());
+    console.log("Receiver:", req.params.id);
 
     // create a new message document and save it to the database
     const newMessage = new Message({
-      sender: senderId,
-      receiver: receiverId,
+      senderId: senderId,
+      receiverId: receiverId,
       text,
       image: imageUrl,
     });
     await newMessage.save();
     res.status(201).json(newMessage);
-// remaining for updating the last message in the chat list by socket.io
-
-
+    // remaining for updating the last message in the chat list by socket.io
   } catch (error) {
     console.log("Error from sendMessage controller", error.message);
     res.status(500).json({ error: "Internal server error" });

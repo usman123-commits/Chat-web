@@ -93,6 +93,7 @@ export const logout = (req, res) => {
 // For updating user profile using cloudinary
 export const updateProfile = async(req, res) => {
   try {
+    
     const {  profilePic } = req.body;
     const userId = req.user._id;
 if (!profilePic){

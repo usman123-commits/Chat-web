@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { checkAuth, logIn, logOut, signUp } from "./slice.auth.thunk.js";
+import { checkAuth, logIn, logOut, signUp, updateProfile } from "./slice.auth.thunk.js";
 import toast from "react-hot-toast";
 
 export const sliceAuth = createSlice({
@@ -10,12 +10,8 @@ export const sliceAuth = createSlice({
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
-    isCheckingAuth: false,
-    formData: {
-      fullName: "",
-      email: "",
-      password: "",
-    },
+    isCheckingAuth: true,
+    onlineUsers: []
   },
   // reducers must be pure funcctions i cannot use async in them for async i have go towards createAsyncThunk
   reducers: {},
@@ -69,7 +65,22 @@ export const sliceAuth = createSlice({
       .addCase(logOut.fulfilled, (state) => {
         state.authUser = null;
         toast.success("Logout sucessfully");
-      });
+      })
+
+      // updateProfile
+
+      .addCase(updateProfile.pending, (state) => {
+        state.isUpdatingProfile=true;
+        
+      })
+      .addCase(updateProfile.fulfilled, (state) => {
+        state.isUpdatingProfile=false;
+        toast.success("Updated Profile Pic");
+      })
+      .addCase(updateProfile.rejected, (state) => {
+       state.isUpdatingProfile=false;
+       toast.error("Something went wrong");
+      })
   },
 });
 

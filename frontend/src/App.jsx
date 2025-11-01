@@ -9,17 +9,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "./slices/auth/slice.auth.thunk.js";
 import { Loader } from "lucide-react";
 import { useEffect } from "react";
-import {Toaster} from "react-hot-toast"
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
+  // selecting states from auth slice
   const { isCheckingAuth, authUser } = useSelector((state) => state.auth);
-  
+  // selecting states from Theme slice
+  const { theme } = useSelector((state) => state.theme);
   // this fun gives you function where you can dispatch the action(what you want to do)
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkAuth());
   }, [checkAuth]);
-// this is used when data is loading 
+  // this is used when data is loading
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -30,27 +32,29 @@ const App = () => {
   }
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route
-          path="/"
-          element={authUser ? <HomePage /> : <Navigate to="/Login" />}
-        />
-        <Route
-          path="/SignUp"
-          element={!authUser ? <SignUp /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/Login"
-          element={!authUser ? <Login /> : <Navigate to="/" />}
-        />
-        <Route path="/SettingPage" element={<SettingPage />} />
-        <Route
-          path="/ProfilePage"
-          element={authUser ? <ProfilePage /> : <Navigate to="/Login" />}
-        />
-      </Routes>
-      <Toaster/>
+      <div data-theme={theme}>
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={authUser ? <HomePage /> : <Navigate to="/Login" />}
+          />
+          <Route
+            path="/SignUp"
+            element={!authUser ? <SignUp /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/Login"
+            element={!authUser ? <Login /> : <Navigate to="/" />}
+          />
+          <Route path="/SettingPage" element={<SettingPage />} />
+          <Route
+            path="/ProfilePage"
+            element={authUser ? <ProfilePage /> : <Navigate to="/Login" />}
+          />
+        </Routes>
+        <Toaster />
+      </div>
     </>
   );
 };

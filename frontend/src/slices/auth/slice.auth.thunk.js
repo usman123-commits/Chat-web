@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {axiosInstance} from "../../lib/axios.js"
-import toast from "react-hot-toast";
 
 
 // 1️⃣ Async function for checking auth
@@ -53,6 +52,21 @@ export const logOut = createAsyncThunk(
   async ( thunkAPI) => {
     try {
       const res = await axiosInstance.post("/auth/logout");
+      return res.data; // this becomes action.payload
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error");
+    }
+  }
+);
+
+//  Async function for logging 
+export const updateProfile = createAsyncThunk(
+  // it is just a label. it must be unique it helps to avoid clashes
+  "auth/updateProfile",
+  async ( profilePic,thunkAPI) => {
+    
+    try {
+      const res = await axiosInstance.put("/auth/updateProfile",profilePic);
       return res.data; // this becomes action.payload
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || "Error");
