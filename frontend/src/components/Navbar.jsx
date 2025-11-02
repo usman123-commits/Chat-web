@@ -46,7 +46,7 @@ const navbar = () => {
 
                 <button
                   className="flex gap-2 items-center"
-                  onClick={()=>dispatch(logOut())}
+                  onClick={()=>{dispatch(logOut())}}
                 >
                   <LogOut className="size-5" />
                   <span className="hidden sm:inline">Logout</span>

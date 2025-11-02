@@ -33,10 +33,12 @@ const MessageInput = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
+
+    
     if (!text.trim() && !imagePreview) return;
 
     try {
-      await  dispatch(sendMessage({
+        dispatch(sendMessage({
         text: text.trim(),
         image: imagePreview,
       }))

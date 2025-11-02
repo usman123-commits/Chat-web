@@ -22,11 +22,11 @@ const ChatContainer = () => {
   const messageEndRef = useRef(null);
 
   useEffect(() => {
-    dispatch(loadingChat(selectedUser._id));
+    dispatch(loadingChat({id:selectedUser._id}));
+     
+    // dispatch(subscribeToMessages());
 
-    dispatch(subscribeToMessages());
-
-    return () => dispatch(unsubscribeFromMessages());
+    // return () => dispatch(unsubscribeFromMessages());
   }, [
     selectedUser._id,
     loadingChat,
@@ -59,15 +59,16 @@ const ChatContainer = () => {
           <div
             key={message._id}
             className={`chat ${
-              message.senderId === authUser._id ? "chat-end" : "chat-start"
+              message.senderId !== authUser._id ? "chat-end" : "chat-start"
             }`}
             ref={messageEndRef}
           >
+            
             <div className=" chat-image avatar">
               <div className="size-10 rounded-full border">
                 <img
                   src={
-                    message.senderId === authUser._id
+                    message.senderId !== authUser._id
                       ? authUser.profilePic || "/avatar.png"
                       : selectedUser.profilePic || "/avatar.png"
                   }

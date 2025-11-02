@@ -23,16 +23,18 @@ export const getMessages = async (req, res) => {
     // the user we are chatting with.we can get it from the url params /:id
     const { id: userToChat } = req.params;
     // the current logged in user
-    const senderId = req.user;
+    const senderId = req.user._id.toString();
+ 
     const messages = await Message.find({
       // returns every message both of users, regardless of who sent it
       // $or takes array of conditions and matches if any condition is true
       $or: [
-        { sender: senderId, receiver: userToChat },
+        { senderId: senderId, receiverId: userToChat },
 
-        { sender: userToChat, receiver: senderId },
+        { senderId: userToChat, receiverId: senderId },
       ],
     });
+    
     res.status(200).json(messages);
   } catch (error) {
     console.log("Eroor from getmMessages controller", error.message);
@@ -61,9 +63,7 @@ export const sendMessage = async (req, res) => {
       );
       imageUrl = cloudinaryResponse.secure_url;
     }
-    console.log("Sender:", req.user?._id.toString());
-    console.log("Receiver:", req.params.id);
-
+    
     // create a new message document and save it to the database
     const newMessage = new Message({
       senderId: senderId,

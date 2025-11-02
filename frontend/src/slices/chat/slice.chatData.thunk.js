@@ -20,9 +20,12 @@ export const getUsers = createAsyncThunk(
 export const loadingChat = createAsyncThunk(
   // it is just a label. it must be unique it helps to avoid clashes
   "messages/loadingChat",
-  async ( {user},thunkAPI) => {
+  // user must be id
+  async ( {id},thunkAPI) => {
     try {
-      const res = await axiosInstance.get(`/message/:${user}`);
+      
+      const res = await axiosInstance.get(`/message/${id}`);
+    
       return res.data; // this becomes action.payload
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || "Error");
@@ -34,12 +37,13 @@ export const loadingChat = createAsyncThunk(
 export const sendMessage = createAsyncThunk(
   // it is just a label. it must be unique it helps to avoid clashes
   "messages/sendMessage",
-  async ( {messageData},thunkAPI) => {
+  async ( {text,image},thunkAPI) => {
+   
     // const senderId = state.auth.authUser.etc(i want to access authUser's id)
      const state = thunkAPI.getState();
-     const senderId= state.auth.authUser._id
+     const senderId= state.chat.selectedUser._id
     try {
-      const res = await axiosInstance.post(`/sendMessage/:${senderId}`,messageData);
+      const res = await axiosInstance.post(`/message/sendMessage/${senderId}`,{text,image});
       return res.data; // this becomes action.payload
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || "Error");

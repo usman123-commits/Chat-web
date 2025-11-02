@@ -4,13 +4,12 @@ import messageRoutes from "./routes/message.route.js";
 import { connectTomongo } from "./lib/mongoose.lib.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { app, server } from "./lib/socket.js";
 // for environment variables
 import dotenv from "dotenv";
 dotenv.config();
 const PORT = process.env.Port;
 
-// app is the object of express that contain all the methods and other objects
-const app = express();
 // Middleware to extract data from the body of incoming requests and in form of JSON
 app.use(express.json());
 // to extract the cookies from the request
@@ -31,6 +30,6 @@ connectTomongo();
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(` Server is running on port ${PORT} `);
 });

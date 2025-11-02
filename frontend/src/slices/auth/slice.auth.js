@@ -1,6 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { checkAuth, logIn, logOut, signUp, updateProfile } from "./slice.auth.thunk.js";
+import {
+  connectSocketClient,
+  disconnectSocketClient,
+} from "./socket-client.js";
+import {
+  checkAuth,
+  logIn,
+  logOut,
+  signUp,
+  updateProfile,
+} from "./slice.auth.thunk.js";
 import toast from "react-hot-toast";
+
+// importing from vite's .env
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const sliceAuth = createSlice({
   name: "Auth",
@@ -11,10 +24,28 @@ export const sliceAuth = createSlice({
     isLoggingIn: false,
     isUpdatingProfile: false,
     isCheckingAuth: true,
-    onlineUsers: []
+    onlineUsers: [],
+    socket: null,
+    isSocketConnected: false,
   },
   // reducers must be pure funcctions i cannot use async in them for async i have go towards createAsyncThunk
-  reducers: {},
+  reducers: {
+    //  to connect with socket
+    //  this fun is used in logIn,logOut,signUp,checkAuth functions
+
+    connectsocket: (state) => {
+      const authUser = state.authUser;
+      const socket = connectSocketClient(baseUrl, authUser);
+      return;
+    },
+
+    //  to disconnect with socket
+    //  this fun is used in logOut function only
+    disconnectsocket: (state) => {
+      disconnectSocketClient();
+      return;
+    },
+  },
   //
   extraReducers: (builder) => {
     builder
@@ -70,20 +101,19 @@ export const sliceAuth = createSlice({
       // updateProfile
 
       .addCase(updateProfile.pending, (state) => {
-        state.isUpdatingProfile=true;
-        
+        state.isUpdatingProfile = true;
       })
       .addCase(updateProfile.fulfilled, (state) => {
-        state.isUpdatingProfile=false;
+        state.isUpdatingProfile = false;
         toast.success("Updated Profile Pic");
       })
       .addCase(updateProfile.rejected, (state) => {
-       state.isUpdatingProfile=false;
-       toast.error("Something went wrong");
-      })
+        state.isUpdatingProfile = false;
+        toast.error("Something went wrong");
+      });
   },
 });
 
 // we are exporting reducer functions and there actions from here
-export const {} = sliceAuth.actions;
+export const {disconnectsocket,connectsocket} = sliceAuth.actions;
 export default sliceAuth.reducer;
