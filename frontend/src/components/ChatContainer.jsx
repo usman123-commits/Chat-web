@@ -30,8 +30,8 @@ const ChatContainer = () => {
   }, [
     selectedUser._id,
     loadingChat,
-    subscribeToMessages,
-    unsubscribeFromMessages,
+    // subscribeToMessages,
+    // unsubscribeFromMessages,
   ]);
 
   useEffect(() => {

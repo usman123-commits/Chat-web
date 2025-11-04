@@ -14,11 +14,26 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection",(socket)=>{
-    console.log("A user connected ",socket.id)
-    socket.on("disconnect",()=>{
-        console.log("A user disconnected ",socket.id);
-    })
-})
+const allOnlineUsers = new Map();
+
+io.on("connection", (socket) => {
+  const userId = socket.handshake.query.userId;
+  console.log("A user connected", socket.id);
+
+  // ✅ If same user connects again, remove old one first
+  if (allOnlineUsers.has(userId)) {
+    const oldSocketId = allOnlineUsers.get(userId);
+    io.sockets.sockets.get(oldSocketId)?.disconnect(true);
+  }
+
+  allOnlineUsers.set(userId, socket.id);
+  io.emit("getOnlineUsers", Array.from(allOnlineUsers.keys()));
+
+  socket.on("disconnect", () => {
+    allOnlineUsers.delete(userId);
+    io.emit("getOnlineUsers", Array.from(allOnlineUsers.keys()));
+    console.log("A user disconnected", socket.id);
+  });
+});
 
 export { io,server,app}

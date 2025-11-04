@@ -9,26 +9,23 @@ const Sidebar = () => {
   const { users, selectedUser, isUsersLoading } = useSelector(
     (state) => state.chat
   );
-  const { onlineUsers } = useSelector(
-    (state) => state.auth
-  );
+  const { onlineUsers } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
- 
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
   useEffect(() => {
+    
     dispatch(getUsers());
-  }, [getUsers]);
+  }, [getUsers,onlineUsers]);
+
+  // useEffect(() => {
+  //   console.log(onlineUsers);
+  // }, [onlineUsers]);
 
   const filteredUsers = showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(user._id))
     : users;
-
-
-
-
-
 
   if (isUsersLoading) return <SidebarSkeleton />;
 

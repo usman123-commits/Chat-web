@@ -7,10 +7,12 @@ import SettingPage from "./pages/SettingPage";
 import ProfilePage from "./pages/ProfilePage";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "./slices/auth/slice.auth.thunk.js";
+import {connectSocketClient,disconnectSocketClient} from "./socket/socketClient.js";
+import {registerSocketEvents} from "./socket/socketEvents.js";
 import { Loader } from "lucide-react";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-
+const baseUrl = import.meta.env.VITE_BASE_URL;
 const App = () => {
   // selecting states from auth slice
   const { isCheckingAuth, authUser } = useSelector((state) => state.auth);
@@ -21,6 +23,15 @@ const App = () => {
   useEffect(() => {
     dispatch(checkAuth());
   }, [checkAuth]);
+
+   useEffect(() => {
+    if (authUser) {
+      const socket = connectSocketClient(baseUrl, authUser);
+      registerSocketEvents(socket);
+    } else {
+      disconnectSocketClient();
+    }
+  }, [authUser]);
   // this is used when data is loading
 
   if (isCheckingAuth && !authUser) {

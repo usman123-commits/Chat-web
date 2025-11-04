@@ -1,9 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  connectSocketClient,
-  disconnectSocketClient,
-} from "./socket-client.js";
-import {
   checkAuth,
   logIn,
   logOut,
@@ -30,21 +26,11 @@ export const sliceAuth = createSlice({
   },
   // reducers must be pure funcctions i cannot use async in them for async i have go towards createAsyncThunk
   reducers: {
-    //  to connect with socket
-    //  this fun is used in logIn,logOut,signUp,checkAuth functions
-
-    connectsocket: (state) => {
-      const authUser = state.authUser;
-      const socket = connectSocketClient(baseUrl, authUser);
-      return;
-    },
-
-    //  to disconnect with socket
-    //  this fun is used in logOut function only
-    disconnectsocket: (state) => {
-      disconnectSocketClient();
-      return;
-    },
+    setOnlineUsers: (state, action) => {
+      let newusers = action.payload;
+      state.onlineUsers = [...newusers];
+      
+    }
   },
   //
   extraReducers: (builder) => {
@@ -115,5 +101,6 @@ export const sliceAuth = createSlice({
 });
 
 // we are exporting reducer functions and there actions from here
-export const {disconnectsocket,connectsocket} = sliceAuth.actions;
+export const {  setOnlineUsers } =
+  sliceAuth.actions;
 export default sliceAuth.reducer;
