@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const localUrl = import.meta.env.VITE_AXIOS_INSTANCE_URL_DEVELOPMENT;
-const mode =import.meta.env.VITE_MODE;
+const localUrl = import.meta.env.VITE_AXIOS_INSTANCE_URL;
+
 export const axiosInstance = axios.create({
  
-  baseURL: mode==="development"?localUrl:"/api",
+  baseURL: localUrl,
   withCredentials: true,
 });
