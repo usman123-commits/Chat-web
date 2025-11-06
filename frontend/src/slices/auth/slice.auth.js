@@ -9,7 +9,7 @@ import {
 import toast from "react-hot-toast";
 
 // importing from vite's .env
-const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL_DEVELOPMENT;
 
 export const sliceAuth = createSlice({
   name: "Auth",

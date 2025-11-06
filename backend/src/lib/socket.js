@@ -16,10 +16,16 @@ const io = new Server(server, {
 
 const allOnlineUsers = new Map();
 
+export function getReceiverSocketId(userId) {
+  const socketID= allOnlineUsers.get(userId)
+  return socketID;
+}
+
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
   console.log("A user connected", socket.id);
-
+ 
+ 
   // ✅ If same user connects again, remove old one first
   if (allOnlineUsers.has(userId)) {
     const oldSocketId = allOnlineUsers.get(userId);
@@ -27,8 +33,9 @@ io.on("connection", (socket) => {
   }
 
   allOnlineUsers.set(userId, socket.id);
-  io.emit("getOnlineUsers", Array.from(allOnlineUsers.keys()));
 
+  io.emit("getOnlineUsers", Array.from(allOnlineUsers.keys()));
+ 
   socket.on("disconnect", () => {
     allOnlineUsers.delete(userId);
     io.emit("getOnlineUsers", Array.from(allOnlineUsers.keys()));
@@ -36,4 +43,4 @@ io.on("connection", (socket) => {
   });
 });
 
-export { io,server,app}
+export { io, server, app };

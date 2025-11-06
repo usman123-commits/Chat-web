@@ -4,7 +4,7 @@ import {
   sendMessage,
   loadingChat,
 } from "../chat/slice.chatData.thunk.js";
-import toast from "react-hot-toast";
+
 
 
 export const sliceChatdata = createSlice({
@@ -20,7 +20,12 @@ export const sliceChatdata = createSlice({
     setSelectedUser: (state, action) => {
       const user = action.payload;
       state.selectedUser = user;
-    },
+    },updateMessages: (state, action) => {
+      const newMessage = action.payload;
+      
+      state.messages = [...state.messages,newMessage];
+      
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -57,14 +62,17 @@ export const sliceChatdata = createSlice({
         // nothing
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
-        // newMessage= message that we send
-        const newMessage = action.payload;
-        state.messages = [...state.messages, newMessage];
+        const {code,newMessage} = action.payload;
+        state.messages=[...state.messages,newMessage]
+       
+        
+        // now new messages are loaded in chat by socketEvent.js
+       
       })
       .addCase(sendMessage.rejected, (state) => {
         // nothing
       });
   },
 });
-export const { setSelectedUser } = sliceChatdata.actions;
+export const { setSelectedUser,updateMessages } = sliceChatdata.actions;
 export default sliceChatdata.reducer;

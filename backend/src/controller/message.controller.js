@@ -1,6 +1,8 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import { cloudinary } from "../lib/cloudinary.lib.js";
+import { io } from "../lib/socket.js";
+import { getReceiverSocketId } from "../lib/socket.js";
 
 // for getting all the users except the logged in user
 export const allUsers = async (req, res) => {
@@ -24,7 +26,7 @@ export const getMessages = async (req, res) => {
     const { id: userToChat } = req.params;
     // the current logged in user
     const senderId = req.user._id.toString();
- 
+
     const messages = await Message.find({
       // returns every message both of users, regardless of who sent it
       // $or takes array of conditions and matches if any condition is true
@@ -34,7 +36,7 @@ export const getMessages = async (req, res) => {
         { senderId: userToChat, receiverId: senderId },
       ],
     });
-    
+
     res.status(200).json(messages);
   } catch (error) {
     console.log("Eroor from getmMessages controller", error.message);
@@ -63,7 +65,7 @@ export const sendMessage = async (req, res) => {
       );
       imageUrl = cloudinaryResponse.secure_url;
     }
-    
+
     // create a new message document and save it to the database
     const newMessage = new Message({
       senderId: senderId,
@@ -72,8 +74,20 @@ export const sendMessage = async (req, res) => {
       image: imageUrl,
     });
     await newMessage.save();
-    res.status(201).json(newMessage);
-    // remaining for updating the last message in the chat list by socket.io
+    // receiver contains the socket id off the receiver id
+    const receiver = getReceiverSocketId(receiverId);
+    // now the messages will be between the right users
+    if (receiver) {
+      /// send an event to eventlistners in socketEvent.js
+      io.to(receiver).emit("messages", newMessage);
+      res
+        .status(201)
+        .json({ newMessage: newMessage, code: "no need to update" });
+    } else {
+      res.status(201).json({ newMessage: newMessage, code: "need to update" });
+    }
+
+    // res.status(201).json({ code: "no need to update" });
   } catch (error) {
     console.log("Error from sendMessage controller", error.message);
     res.status(500).json({ error: "Internal server error" });

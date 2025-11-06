@@ -6,9 +6,11 @@ export const connectSocketClient = (baseUrl, authUser) => {
   if (!socket) {
     socket = io(baseUrl, {
       query: { userId: authUser._id },
-    });
-
+    }); 
+   socket.on("connected",()=>{
     console.log("🔌 Socket connected:", socket.id);
+   })
+    
   }
   return socket;
 };

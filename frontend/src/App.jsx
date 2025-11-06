@@ -12,7 +12,8 @@ import {registerSocketEvents} from "./socket/socketEvents.js";
 import { Loader } from "lucide-react";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_MODE=="development"?import.meta.env.VITE_BASE_URL_DEVELOPMENT:"/";
 const App = () => {
   // selecting states from auth slice
   const { isCheckingAuth, authUser } = useSelector((state) => state.auth);
