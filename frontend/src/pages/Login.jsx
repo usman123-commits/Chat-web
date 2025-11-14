@@ -54,9 +54,9 @@ const LoginPage = () => {
     <div className="h-screen grid lg:grid-cols-2">
       {/* Left Side - Form */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-8">
+        <div className="w-full max-w-md space-y-8 -mt-8">
           {/* Logo */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <div className="flex flex-col items-center gap-2 group">
               <div
                 className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20
@@ -67,6 +67,41 @@ const LoginPage = () => {
               <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
               <p className="text-base-content/60">Sign in to your account</p>
             </div>
+          </div>
+
+          {/* OAuth Buttons (UI only) */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
+            <button
+              type="button"
+              className="w-full sm:w-auto flex items-center gap-3 px-4 py-2 rounded-md bg-transparent border hover:shadow-lg transform transition-transform hover:scale-105"
+              aria-label="Login with Google"
+              id="google-oauth-btn"
+            >
+              {/* Google logo image */}
+              <span className="w-6 h-6 flex items-center justify-center">
+                <img
+                  src={"/googlelogo.png"}
+                  alt="Google Logo"
+                  className="w-4 h-4"
+                />
+              </span>
+              <span className="text-sm font-medium">Login with Google</span>
+            </button>
+            {/* facebook button */}
+            <button
+              type="button"
+              className="w-full sm:w-auto flex items-center gap-3 px-4 py-2 rounded-md bg-transparent border hover:shadow-lg transform transition-transform hover:scale-105"
+              aria-label="Login with Facebook"
+            >
+              <span className="w-6 h-6 flex items-center justify-center">
+                <img
+                  src={"/facebook.png"}
+                  alt="Google Logo"
+                  className="w-4 h-4"
+                />
+              </span>
+              <span className="text-sm font-medium">Login with Facebook</span>
+            </button>
           </div>
 
           {/* Form */}
