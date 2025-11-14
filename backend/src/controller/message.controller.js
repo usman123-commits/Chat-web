@@ -74,9 +74,9 @@ export const sendMessage = async (req, res) => {
       image: imageUrl,
     });
     await newMessage.save();
-    // receiver contains the socket id off the receiver id
+    // receiver contains the socket id of the receiver id
     const receiver = getReceiverSocketId(receiverId);
-    // now the messages will be between the right users
+    // now the messages will be availabe to right users
     if (receiver) {
       /// send an event to eventlistners in socketEvent.js
       io.to(receiver).emit("messages", newMessage);

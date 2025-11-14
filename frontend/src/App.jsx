@@ -5,10 +5,14 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import SettingPage from "./pages/SettingPage";
 import ProfilePage from "./pages/ProfilePage";
+import VideoCall from "./pages/VideoCall.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "./slices/auth/slice.auth.thunk.js";
-import {connectSocketClient,disconnectSocketClient} from "./socket/socketClient.js";
-import {registerSocketEvents} from "./socket/socketEvents.js";
+import {
+  connectSocketClient,
+  disconnectSocketClient,
+} from "./socket/socketClient.js";
+import { registerSocketEvents } from "./socket/socketEvents.js";
 import { Loader } from "lucide-react";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
@@ -25,7 +29,7 @@ const App = () => {
     dispatch(checkAuth());
   }, [checkAuth]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (authUser) {
       const socket = connectSocketClient(baseUrl, authUser);
       registerSocketEvents(socket);
@@ -63,6 +67,10 @@ const App = () => {
           <Route
             path="/ProfilePage"
             element={authUser ? <ProfilePage /> : <Navigate to="/Login" />}
+          />
+          <Route
+            path="/VideoCall"
+            element={authUser ? <VideoCall /> : <Navigate to="/Login" />}
           />
         </Routes>
         <Toaster />

@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../slices/auth/slice.auth.thunk.js";
-import { LogOut, MessageSquare, Settings, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { LogOut, MessageSquare, Settings, User, ArrowLeft } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 const navbar = () => {
   const { authUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   return (
     <header
@@ -14,15 +15,27 @@ const navbar = () => {
       <div className="container mx-auto px-4 h-16">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center gap-8">
-            <Link
-              to="/"
-              className="flex items-center gap-2.5 hover:opacity-80 transition-all"
-            >
-              <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-primary" />
-              </div>
-              <h1 className="text-lg font-bold">Chatty</h1>
-            </Link>
+            {location.pathname === "/VideoCall" ? (
+              <Link
+                to="/"
+                className="flex items-center gap-2.5 hover:opacity-80 transition-all"
+              >
+                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-primary-content transition-colors">
+                  <ArrowLeft className="w-5 h-5 text-primary hover:text-primary-content" />
+                </div>
+                <h1 className="text-lg font-bold hidden sm:inline">Back to Chat</h1>
+              </Link>
+            ) : (
+              <Link
+                to="/"
+                className="flex items-center gap-2.5 hover:opacity-80 transition-all"
+              >
+                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-primary" />
+                </div>
+                <h1 className="text-lg font-bold">Chatty</h1>
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -46,7 +59,9 @@ const navbar = () => {
 
                 <button
                   className="flex gap-2 items-center"
-                  onClick={()=>{dispatch(logOut())}}
+                  onClick={() => {
+                    dispatch(logOut());
+                  }}
                 >
                   <LogOut className="size-5" />
                   <span className="hidden sm:inline">Logout</span>

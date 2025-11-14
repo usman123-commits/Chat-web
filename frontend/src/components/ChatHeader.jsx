@@ -1,9 +1,11 @@
-import { X } from "lucide-react";
+import { X, Phone } from "lucide-react";
 import {useDispatch,useSelector} from "react-redux";
 import {setSelectedUser } from "../slices/chat/slice.chatData.js"
+import { useNavigate } from "react-router-dom";
 
 const ChatHeader = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {selectedUser} = useSelector((state)=>state.chat);
      const {onlineUsers} = useSelector((state)=>state.auth);
 
@@ -29,9 +31,18 @@ const ChatHeader = () => {
         </div>
 
         {/* Close button */}
-        <button onClick={() => dispatch(setSelectedUser(null))}>
-          <X />
-        </button>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => navigate("/VideoCall")}
+            className="btn btn-circle btn-sm btn-ghost hover:bg-primary hover:text-white transition-colors"
+            title="Start video call"
+          >
+            <Phone className="w-5 h-5" />
+          </button>
+          <button onClick={() => dispatch(setSelectedUser(null))} className="btn btn-circle btn-sm btn-ghost">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );

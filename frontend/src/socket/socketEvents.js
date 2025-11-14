@@ -2,7 +2,9 @@ import { getSocket } from "./socketClient.js";
 import store from "../redux-Store/store.js";
 import { setOnlineUsers } from "../slices/auth/slice.auth.js";
 import { updateMessages } from "../slices/chat/slice.chatData.js";
-import { useSelector } from "react-redux";
+
+
+
 export const registerSocketEvents = () => {
   // get the socket instance to make event listeners
   const socket = getSocket();
@@ -17,11 +19,13 @@ export const registerSocketEvents = () => {
     console.log("🟢 Online Users Updated:", userIds);
     store.dispatch(setOnlineUsers(userIds));
   });
-  // this is the eventlistner to get new messages
+
+  // this is the eventlistener to get new messages
+
   socket.on("messages", (message) => {
     const state = store.getState();
     const selectedUser = state.chat.selectedUser;
-
+  // this insure the message is send to correct user 
     if (selectedUser?._id === message.senderId) {
       store.dispatch(updateMessages(message));
     }
